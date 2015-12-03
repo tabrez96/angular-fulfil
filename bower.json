@@ -1,0 +1,29 @@
+{
+  "name": "angular-fulfil",
+  "version": "0.0.0",
+  "authors": [
+    "Tarun Bhardwaj <tarun.bhardwaj@fulfil.io>"
+  ],
+  "description": "AngularJS Fulfil Client Service",
+  "main": "./src/fulfil.min.js",
+  "keywords": [
+    "angular",
+    "Fulfil"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.8",
+    "ngstorage": "~0.3.0",
+    "google-closure-library": "latest"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.3.8"
+  }
+}
