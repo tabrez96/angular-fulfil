@@ -30,30 +30,61 @@ goog.scope(function () {
     /**
      * @private
      */
-    this._localStorage = $localStorage;
+    this._localStorage = $localStorage.$default({
+      sessionId: null,
+      user: {},
+      login: ''
+    });
 
     /**
      * @private
      */
     this._sessionId = null;
 
-    /**
-     * @private
-     */
-    this.login = '';
 
     /**
      * @private
      */
     this._apiBasePath = '/api/1/';
 
-    this.user = {};
+    /**
+     * @private
+     * Load session from localstorage
+     */
+    this._load = function () {
+      this._localStorage.$default({
+        sessionId: null,
+        user: {},
+        login: ''
+      });
+      /**
+       * @private
+       */
+      this._sessionId = this._localStorage.sessionId;
+      this.login = this._localStorage.login;
+      this.user = this._localStorage.user;
+    };
+
+    this._load(); // Initialize
   };
 
   var Session = fulfil.base.Session;
 
   Session.prototype.isLoggedIn = function () {
     return !!this._sessionId;
+  };
+
+  Session.prototype.updateStorage = function () {
+    this._localStorage.sessionId = this._sessionId;
+    this._localStorage.user = this.user;
+    this._localStorage.login = this.login;
+  };
+
+  Session.prototype._clear = function () {
+    this._localStorage.$reset({
+      login: this.login
+    });
+    this._load();
   };
 
   Session.prototype.doLogin = function (login, password) {
@@ -67,14 +98,13 @@ goog.scope(function () {
       }
     ).success(function (result) {
       this._sessionId = result[1];
+      this.updateStorage();
       this.getUserPreference();
     }.bind(this));
   };
 
   Session.prototype.doLogout = function () {
-    // XXX: Perform clear session
-    this.sessionId = null;
-    this.user = {};
+    this._clear();
     this._rootScope.$broadcast('fulfil:logout');
 
     // TODO: Implement actual logout when its on server side.
@@ -106,13 +136,11 @@ goog.scope(function () {
     )
     .success(function (result) {
       this.user.preference = result;
-      angular.forEach([
-        'name',
-        'email',
-      ], function (field_name) {
-        console.log(field_name);
+      angular.forEach(['name', 'email'], function (field_name) {
         this.user[field_name] = result[field_name];
       }.bind(this));
+
+      this.updateStorage();
     }.bind(this));
   };
 
