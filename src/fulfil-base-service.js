@@ -121,8 +121,8 @@ goog.scope(function () {
       params: params,
       data: data || []
     })
-    .error(function (reason) {
-      if (reason.status == 401) {
+    .error(function (reason, status_code) {
+      if (status_code == 401) {
         this._rootScope.$broadcast('fulfil:unauthorized');
       }
     }.bind(this));
