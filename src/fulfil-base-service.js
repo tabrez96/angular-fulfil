@@ -97,6 +97,7 @@ goog.scope(function () {
         password: password
       }
     ).success(function (result) {
+      this.user.id = result[0];
       this._sessionId = result[1];
       this.updateStorage();
       this.getUserPreference();
