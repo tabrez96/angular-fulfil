@@ -63,6 +63,7 @@ goog.scope(function () {
       this._sessionId = this._localStorage.sessionId;
       this.login = this._localStorage.login;
       this.user = this._localStorage.user;
+      this.userId = this._localStorage.userId;
     };
 
     this._load(); // Initialize
@@ -77,6 +78,7 @@ goog.scope(function () {
   Session.prototype.updateStorage = function () {
     this._localStorage.sessionId = this._sessionId;
     this._localStorage.user = this.user;
+    this._localStorage.userId = this.userId;
     this._localStorage.login = this.login;
   };
 
@@ -97,7 +99,7 @@ goog.scope(function () {
         password: password
       }
     ).success(function (result) {
-      this.user.id = result[0];
+      this.userId = result[0];
       this._sessionId = result[1];
       this.updateStorage();
       this.getUserPreference();
