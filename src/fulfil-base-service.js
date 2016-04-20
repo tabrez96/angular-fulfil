@@ -33,7 +33,8 @@ goog.scope(function () {
     this._localStorage = $localStorage.$default({
       sessionId: null,
       user: {},
-      login: ''
+      login: '',
+      subdomain: ''
     });
 
     /**
@@ -45,16 +46,19 @@ goog.scope(function () {
     /**
      * @private
      */
+    this.subdomain = '';
     this._apiBasePath = '/api/1/';
-
-    /**
-     * @public
-     * Allow setting the _apiBasepath
-     * 
-     */
-    Session.prototype.setApiBasePath = function (basePath){
-      this._apiBasePath = basePath;
+    this.apiBasePath = function() {
+      if (this.subdomain) {
+        return 'https://' + this.subdomain + '.fulfil.io' + this._apiBasePath;
+      } else {
+        return this._apiBasePath;
+      }
     };
+
+    Session.prototype.setSubDomain = function (subdomain){
+      this.subdomain = subdomain;
+    };    
 
     /**
      * @private
@@ -64,7 +68,8 @@ goog.scope(function () {
       this._localStorage.$default({
         sessionId: null,
         user: {},
-        login: ''
+        login: '',
+        subdomain: ''
       });
       /**
        * @private
@@ -73,6 +78,7 @@ goog.scope(function () {
       this.login = this._localStorage.login;
       this.user = this._localStorage.user;
       this.userId = this._localStorage.userId;
+      this.subdomain = this._localStorage.subdomain;
     };
 
     this._load(); // Initialize
@@ -89,6 +95,7 @@ goog.scope(function () {
     this._localStorage.user = this.user;
     this._localStorage.userId = this.userId;
     this._localStorage.login = this.login;
+    this._localStorage.subdomain = this.subdomain;
   };
 
   Session.prototype._clear = function () {
@@ -102,7 +109,7 @@ goog.scope(function () {
     this.login = login;  // Save login
 
     return this._http.post(
-      this._apiBasePath + 'login',
+      this.apiBasePath() + 'login',
       {
         login: login,
         password: password
@@ -126,7 +133,7 @@ goog.scope(function () {
   Session.prototype.serverCall = function (url, method, params, data) {
     return this._http({
       method: method,
-      url: this._apiBasePath + url,
+      url: this.apiBasePath() + url,
       headers: {
         'x-session': this._sessionId
       },
