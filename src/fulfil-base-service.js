@@ -48,6 +48,15 @@ goog.scope(function () {
     this._apiBasePath = '/api/1/';
 
     /**
+     * @public
+     * Allow setting the _apiBasepath
+     * 
+     */
+    Session.prototype.setApiBasePath = function (basePath){
+      this._apiBasePath = basePath;
+    };
+
+    /**
      * @private
      * Load session from localstorage
      */
