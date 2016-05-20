@@ -34,7 +34,8 @@ goog.scope(function () {
       sessionId: null,
       user: {},
       login: '',
-      subdomain: ''
+      subdomain: '',
+      context: {},
     });
 
     /**
@@ -69,7 +70,8 @@ goog.scope(function () {
         sessionId: null,
         user: {},
         login: '',
-        subdomain: ''
+        subdomain: '',
+        context: {},
       });
       /**
        * @private
@@ -79,6 +81,7 @@ goog.scope(function () {
       this.user = this._localStorage.user;
       this.userId = this._localStorage.userId;
       this.subdomain = this._localStorage.subdomain;
+      this.context = this._localStorage.context;
     };
 
     this._load(); // Initialize
@@ -96,6 +99,7 @@ goog.scope(function () {
     this._localStorage.userId = this.userId;
     this._localStorage.login = this.login;
     this._localStorage.subdomain = this.subdomain;
+    this._localStorage.context = this.context;
   };
 
   Session.prototype._clear = function () {
@@ -155,6 +159,7 @@ goog.scope(function () {
     )
     .success(function (result) {
       this.user.preference = result;
+      this.context = result;
       angular.forEach(['name', 'email'], function (field_name) {
         this.user[field_name] = result[field_name];
       }.bind(this));
