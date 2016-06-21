@@ -151,15 +151,35 @@ goog.scope(function () {
     }.bind(this));
   };
 
+  /**
+   * @export
+   * Load user context
+   */
+  Session.prototype.getUserContext = function () {
+    return this.serverCall(
+      'model/res.user/get_preferences',
+      'PUT', null, [true]
+    )
+    .success(function (result) {
+      this.context = result;
+      this.updateStorage();
+    }.bind(this));
+  };
+
+  /**
+   * @export
+   * Load user preference and context
+   */
   Session.prototype.getUserPreference = function () {
-    console.log("getting preference");
+    // Reload user context with UserPreferences
+    this.getUserContext();
+
     return this.serverCall(
       'model/res.user/get_preferences',
       'PUT'
     )
     .success(function (result) {
       this.user.preference = result;
-      this.context = result;
       angular.forEach(['name', 'email'], function (field_name) {
         this.user[field_name] = result[field_name];
       }.bind(this));
