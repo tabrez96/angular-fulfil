@@ -59,7 +59,7 @@ goog.scope(function () {
 
     Session.prototype.setSubDomain = function (subdomain){
       this.subdomain = subdomain;
-    };    
+    };
 
     /**
      * @private
@@ -103,10 +103,12 @@ goog.scope(function () {
   };
 
   Session.prototype._clear = function () {
-    this._localStorage.$reset({
-      login: this.login
-    });
-    this._load();
+    delete this._sessionId;
+    delete this.userId;
+    this.user = {};
+    this.context = {};
+
+    this.updateStorage();
   };
 
   Session.prototype.doLogin = function (login, password) {
